@@ -33,29 +33,57 @@ def leer_opcion():
         except ValueError:
             print("Error: ingrese un numero entero positivo")
 
-# ========== FUNCIONES DE VALIDACION ==========
+# ========== FUNCIONES DE VALIDACION Y CONTROL ==========
 
 # Nombre
-def validar_nombre(nombre):
-    return nombre.strip() != ""
+def validar_texto(texto):
+    return texto.strip() != ""
 
-# Categoria
-def validar_categoria(categoria):
-    return categoria.strip() != ""
-
-# Precio
-def validar_precio(precio):
+# Entero positivo mayor a 0
+def validar_entero_positivo(precio):
     return precio > 0
 
-# Stock
-def validar_stock(stock):
+# Entero positivo o 0
+def validar_entero(stock):
     return stock >= 0
-
-# Productos vendidos
-def validar_vendidos(vendidos):
-    return vendidos >= 0
 
 # Disponibilidad
 def validar_disponible(opcion):
     opcion = opcion.lower()
     return opcion == "s" or opcion == "n"
+
+# Buscar codigo
+def buscar_codigo(productos, codigo):
+    codigo = codigo.upper().strip()
+    if codigo in productos:
+        return True
+    return False
+
+# validar codigo
+def validar_codigo(productos, codigo):
+    codigo = codigo.upper().strip()
+    if validar_texto(codigo) and codigo not in productos:
+        return True
+    return False
+
+# Leer entero
+def leer_entero(mensaje):
+    while True:
+        try:
+            entero = int(input(mensaje))
+            return entero
+        except ValueError:
+            print("Ingresa un numero entero")
+
+# ========== FUNCIONES DE CONTROL =========
+
+# Leer texto no vacio
+def leer_texto_no_vacio(mensaje):
+    while True:
+        texto = input(mensaje)
+        if validar_texto(texto):
+            return texto
+        else:
+            print("El campo no puede estar vacio")
+
+# ========== FUNCIONES EJECUTIVAS DE OPCIONES DEL MENU =========
