@@ -87,8 +87,6 @@ def leer_entero(mensaje):
         except ValueError:
             print("Ingresa un numero entero")
 
-# ========== FUNCIONES DE CONTROL =========
-
 # Leer texto no vacio
 def leer_texto_no_vacio(mensaje):
     while True:
@@ -152,3 +150,39 @@ def eliminar_producto(codigo, productos,inventario):
         del inventario[codigo]
         return True
     return False
+
+# ========== FUNCIONES EJECUTIVAS =========
+
+# Ejecutar busqueda
+def busqueda_exe(productos,inventario):
+    codigo = leer_texto_no_vacio("Ingresa el codigo: ")
+    if buscar_codigo(productos,codigo):
+        print("\n--Producto encontrado--")
+        mostrar_producto(productos,inventario,codigo)
+        return codigo
+    print("Producto no encontrado")
+    return None
+
+# Mostrar datos producto
+def mostrar_producto(productos,inventario,codigo):
+    if codigo:
+        print(f"Nombre: {productos[codigo][0]}")
+        print(f"Categoria: {productos[codigo][1]}")
+        print(f"Precio: ${productos[codigo][2]}")
+        if productos[codigo][3]:
+            print("Stock: Disponibles")
+        else:
+            print("Stock: Sin stock")
+        print(f"Stock actual: {inventario[codigo][0]}")
+        print(f"Vendidos: {inventario[codigo][1]}")
+
+# Mostrar listado de productos
+def listar_productos(productos,inventario):
+    if not productos:
+        print("El inventario está vacío")
+    else:
+        print("=== LISTADO DE PRODUCTOS ===")
+        for codigo in productos:
+            mostrar_producto(productos,inventario,codigo)
+            print("-"*50)
+        print("=== FIN DE LA LISTA ===")
