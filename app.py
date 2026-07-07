@@ -47,7 +47,7 @@ def leer_opcion():
 
 # ========== FUNCIONES DE VALIDACION Y CONTROL ==========
 
-# Nombre
+# Validar texto
 def validar_texto(texto):
     return texto.strip() != ""
 
@@ -58,11 +58,6 @@ def validar_entero_positivo(precio):
 # Entero positivo o 0
 def validar_entero(stock):
     return stock >= 0
-
-# Disponibilidad
-def validar_disponible(opcion):
-    opcion = opcion.lower()
-    return opcion == "s" or opcion == "n"
 
 # Buscar codigo
 def buscar_codigo(productos, codigo):
@@ -83,7 +78,20 @@ def leer_entero(mensaje):
     while True:
         try:
             entero = int(input(mensaje))
-            return entero
+            if validar_entero(entero):
+                return entero
+            print("Ingresa un numero entero mayor o igual a 0")
+        except ValueError:
+            print("Ingresa un numero entero")
+
+# Leer entero positivo
+def leer_entero_positivo(mensaje):
+    while True:
+        try:
+            entero = int(input(mensaje))
+            if validar_entero_positivo(entero):
+                return entero
+            print("Ingresa un numero entero mayor a 0")
         except ValueError:
             print("Ingresa un numero entero")
 
@@ -96,18 +104,23 @@ def leer_texto_no_vacio(mensaje):
         else:
             print("El campo no puede estar vacio")
 
+# Leer disponibilidad
+def leer_dispo(mensaje):
+    while True:
+        dispo = input(mensaje).strip()
+        if dispo == "s":
+            return True
+        elif dispo == "n":
+            return False
+        print("Error: Ingresa una opcion valida ('s' para Si o 'n' para No)")
+
 # ========== FUNCIONES LOGICAS ASISTENTES DE OPCIONES DEL MENU =========
 
 # Agregar producto
 def agregar_producto(codigo,nombre,categoria,precio,disponible,stock,vendidos,productos,inventario):
     if not validar_codigo(productos,codigo):
         return False
-    if disponible.lower().strip() == "s":
-        disponible_bool = True
-    else:
-        disponible_bool = False
-    
-    productos[codigo] = [nombre,categoria,precio,disponible_bool]
+    productos[codigo] = [nombre,categoria,precio,disponible]
 
     inventario[codigo] = [stock,vendidos]
 
@@ -118,7 +131,7 @@ def stock_categoria(categoria, productos,inventario):
     categoria = categoria.upper().strip()
     total_stock = 0
     for codigo, datos in productos.items():
-        if datos[1] == categoria:
+        if datos[1].upper().strip() == categoria:
             total_stock += inventario[codigo][0]
     
     return total_stock
@@ -155,7 +168,7 @@ def eliminar_producto(codigo, productos,inventario):
 
 # Ejecutar busqueda
 def busqueda_exe(productos,inventario):
-    codigo = leer_texto_no_vacio("Ingresa el codigo: ")
+    codigo = leer_texto_no_vacio("Ingresa el codigo: ").upper().strip()
     if buscar_codigo(productos,codigo):
         print("\n--Producto encontrado--")
         mostrar_producto(productos,inventario,codigo)
@@ -186,3 +199,35 @@ def listar_productos(productos,inventario):
             mostrar_producto(productos,inventario,codigo)
             print("-"*50)
         print("=== FIN DE LA LISTA ===")
+
+# Ejecutar actualizar precio
+def actualizar_precio_exe(productos,inventario):
+    print("\n=== ACTUALIZAR PRECIO ===")
+    codigo = busqueda_exe(productos,inventario)
+    if codigo:
+        nuevo_precio = leer_entero("Ingrese el nuevo precio: ")
+        actualizar_precio(codigo,nuevo_precio,productos)
+        print("Precio actualizado")
+
+# Ejecutar eliminar producto
+def eliminar_producto_exe(productos,inventario):
+    print("\n=== ELIMINAR PRODUCTO ===")
+    codigo = busqueda_exe(productos,inventario)
+    if codigo:
+        eliminar_producto(codigo,productos,inventario)
+        print("Producto eliminado con exito")
+
+# FINAL BOSS Agregar producto
+def agregar_producto_exe(productos,inventario):
+    codigo = leer_texto_no_vacio("Ingrese el codigo del nuevo producto: ")
+    if not validar_codigo(productos,codigo):
+        print("Error: Este codigo ya existe")
+        return
+    
+    nombre = leer_texto_no_vacio("Ingresa el nombre: ")
+    categoria = leer_texto_no_vacio("Ingresa la categoria: ")
+    precio = leer_entero_positivo("Ingresa el precio: ")
+    stock = leer_entero("Ingresa la cantidad: ")
+    vendidos = 0
+    dispo = leer_dispo("Esta disponible? (s/n): ")
+    agregar_producto(codigo,nombre,categoria,precio,dispo,stock,vendidos,productos,inventario)
