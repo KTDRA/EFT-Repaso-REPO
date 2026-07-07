@@ -1,4 +1,16 @@
 # SISTEMA DE REGISTRO DE PRODUCTOS #
+#
+# inventario = {codigo:[stock,vendidos]}
+
+# productos = {codigo:[nombre,categoria,precio,disponible]}
+#
+#
+#
+#
+#
+#
+#
+
 import os
 
 # Borrar pantalla
@@ -86,4 +98,57 @@ def leer_texto_no_vacio(mensaje):
         else:
             print("El campo no puede estar vacio")
 
-# ========== FUNCIONES EJECUTIVAS DE OPCIONES DEL MENU =========
+# ========== FUNCIONES LOGICAS ASISTENTES DE OPCIONES DEL MENU =========
+
+# Agregar producto
+def agregar_producto(codigo,nombre,categoria,precio,disponible,stock,vendidos,productos,inventario):
+    if not validar_codigo(productos,codigo):
+        return False
+    if disponible.lower().strip() == "s":
+        disponible_bool = True
+    else:
+        disponible_bool = False
+    
+    productos[codigo] = [nombre,categoria,precio,disponible_bool]
+
+    inventario[codigo] = [stock,vendidos]
+
+    return True
+
+# Stock por categoria
+def stock_categoria(categoria, productos,inventario):
+    categoria = categoria.upper().strip()
+    total_stock = 0
+    for codigo, datos in productos.items():
+        if datos[1] == categoria:
+            total_stock += inventario[codigo][0]
+    
+    return total_stock
+
+# Busqueda por rango de precio
+def buscar_precio(precio_min,precio_max,productos,inventario):
+    items = []
+    if precio_max < precio_min:
+        return False
+    for codigo in productos:
+        if (precio_min <= productos[codigo][2] <= precio_max) and inventario[codigo][0] > 0:
+            item = [productos[codigo][1],productos[codigo][2]]
+            items.append(item)
+    return items
+
+# Actualizar precio
+def actualizar_precio(codigo,nuevo_precio,productos):
+    codigo = codigo.upper().strip()
+    if buscar_codigo(productos,codigo):
+        productos[codigo][2] = nuevo_precio
+        return True
+    return False
+
+# Eliminar producto
+def eliminar_producto(codigo, productos,inventario):
+    codigo = codigo.upper().strip()
+    if buscar_codigo(productos,codigo):
+        del productos[codigo]
+        del inventario[codigo]
+        return True
+    return False
