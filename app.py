@@ -3,13 +3,7 @@
 # inventario = {codigo:[stock,vendidos]}
 
 # productos = {codigo:[nombre,categoria,precio,disponible]}
-#
-#
-#
-#
-#
-#
-#
+
 
 import os
 
@@ -231,3 +225,63 @@ def agregar_producto_exe(productos,inventario):
     vendidos = 0
     dispo = leer_dispo("Esta disponible? (s/n): ")
     agregar_producto(codigo,nombre,categoria,precio,dispo,stock,vendidos,productos,inventario)
+
+# Ejecutar consulta de stock por categoria
+def stock_categoria_exe(productos, inventario):
+    print("\n=== CONSULTAR STOCK POR CATEGORÍA ===")
+    categoria = leer_texto_no_vacio("Ingrese el nombre de la categoría: ")
+    total = stock_categoria(categoria, productos, inventario)
+    print(f"\nEl stock total para la categoría '{categoria}' es: {total} unidades.")
+
+# Ejecutar busqueda por rango de precio
+def buscar_precio_exe(productos, inventario):
+    print("\n=== BUSCAR PRODUCTOS POR RANGO DE PRECIO ===")
+    precio_min = leer_entero("Ingrese el precio mínimo: ")
+    precio_max = leer_entero("Ingrese el precio máximo: ")
+    
+    resultados = buscar_precio(precio_min, precio_max, productos, inventario)
+    
+    if resultados == False:
+        print("Error: El precio máximo no puede ser menor al precio mínimo.")
+        return
+        
+    if not resultados:
+        print("No se encontraron productos disponibles en ese rango de precio.")
+    else:
+        print("\n--- Productos Encontrados ---")
+        for item in resultados:
+            print(f"Categoría: {item[0]} | Precio: ${item[1]}")
+
+# ========== PROGRAMA PRINCIPAL ==========
+
+def main():
+    productos = {}
+    inventario = {}
+    
+    while True:
+        mostrar_menu()
+        opcion = leer_opcion()
+        clean_screen()
+        
+        if opcion == 1:
+            stock_categoria_exe(productos, inventario)
+        elif opcion == 2:
+            buscar_precio_exe(productos, inventario)
+        elif opcion == 3:
+            actualizar_precio_exe(productos, inventario)
+        elif opcion == 4:
+            agregar_producto_exe(productos, inventario)
+        elif opcion == 5:
+            eliminar_producto_exe(productos, inventario)
+        elif opcion == 6:
+            listar_productos(productos, inventario)
+        elif opcion == 7:
+            print("Saliendo del sistema de registro...")
+            break
+            
+        input("\nPresione Enter para continuar...")
+        clean_screen()
+
+if __name__ == "__main__":
+    clean_screen()
+    main()
